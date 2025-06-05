@@ -52,6 +52,13 @@ public class TitleManager : MonoBehaviour
 
         // UIManager.Instance.EnableStatsUI(false);
 
+        // var confirmUIData = new ConfirmUIData();
+        // confirmUIData.ConfirmType = ConfirmType.OK;
+        // confirmUIData.TitleTxt = "UI Test";
+        // confirmUIData.DescTxt = "This is UI Text";
+        // confirmUIData.OKBtnTxt = "OK1";
+        // UIManager.Instance.OpenUI<ConfirmUI>(confirmUIData);
+
 
 
         StartCoroutine(LoadGameCo());
