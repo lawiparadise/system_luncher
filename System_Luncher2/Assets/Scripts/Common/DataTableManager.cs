@@ -1,56 +1,169 @@
+// ì‹œìŠ¤í…œ ë„¤ì„ìŠ¤í˜ì´ìŠ¤ ì‚¬ìš©
 using System;
-using System.Collections;
+// ì‹œìŠ¤í…œ ì»¬ë ‰ì…˜ ë„¤ì„ìŠ¤í˜ì´ìŠ¤ ì‚¬ìš©
 using System.Collections.Generic;
+// LINQ ë„¤ì„ìŠ¤í˜ì´ìŠ¤ ì‚¬ìš©
 using System.Linq;
-using UnityEngine;
 
-// µ¥ÀÌÅÍ Å×ÀÌºíÀ» °ü¸®ÇÏ´Â ½Ì±ÛÅæ ¸Å´ÏÀú Å¬·¡½º
+// ë°ì´í„° í…Œì´ë¸”ì„ ê´€ë¦¬í•˜ëŠ” ì‹±ê¸€í†¤ í´ë˜ìŠ¤
 public class DataTableManager : SingletonBehaviour<DataTableManager>
 {
-    private const string DATA_PATH = "DataTable"; // µ¥ÀÌÅÍ Å×ÀÌºí ÆÄÀÏ °æ·Î
+    // ë°ì´í„° íŒŒì¼ì´ ì €ì¥ëœ ê²½ë¡œ ìƒìˆ˜
+    private const string DATA_PATH = "DataTable";
 
-    private const string CHAPTER_DATA_TABLE = "ChapterDataTable"; // Ã©ÅÍ µ¥ÀÌÅÍ Å×ÀÌºí ÆÄÀÏ¸í
-    private List<ChapterData> ChapterDataTable = new List<ChapterData>(); // Ã©ÅÍ µ¥ÀÌÅÍ ¸®½ºÆ®
-
-    // ÃÊ±âÈ­ ÇÔ¼ö
+    // ì´ˆê¸°í™” ë©”ì„œë“œ
     protected override void Init()
     {
-        base.Init(); // ºÎ¸ğ Å¬·¡½º ÃÊ±âÈ­ È£Ãâ
+        // ë¶€ëª¨ í´ë˜ìŠ¤ì˜ Init í˜¸ì¶œ
+        base.Init();
 
-        LoadChapterDataTable(); // Ã©ÅÍ µ¥ÀÌÅÍ Å×ÀÌºí ·Îµå
+        // ì±•í„° ë°ì´í„° í…Œì´ë¸” ë¡œë“œ
+        LoadChapterDataTable();
+        // ì•„ì´í…œ ë°ì´í„° í…Œì´ë¸” ë¡œë“œ
+        LoadItemDataTable();
     }
 
-    // Ã©ÅÍ µ¥ÀÌÅÍ Å×ÀÌºí ·Îµå ÇÔ¼ö
+    // ì±•í„° ë°ì´í„° ê´€ë ¨ ì˜ì—­ ì‹œì‘
+    #region CHAPTER_DATA
+    // ì±•í„° ë°ì´í„° í…Œì´ë¸” íŒŒì¼ëª… ìƒìˆ˜
+    private const string CHAPTER_DATA_TABLE = "ChapterDataTable";
+    // ì±•í„° ë°ì´í„° ë¦¬ìŠ¤íŠ¸
+    private List<ChapterData> ChapterDataTable = new List<ChapterData>();
+
+    // ì±•í„° ë°ì´í„° í…Œì´ë¸” ë¡œë“œ ë©”ì„œë“œ
     private void LoadChapterDataTable()
     {
-        var parsedDataTable = CSVReader.Read($"{DATA_PATH}/{CHAPTER_DATA_TABLE}"); // CSV ÆÄÀÏ ÀĞ±â
+        // CSV íŒŒì¼ì„ ì½ì–´ì„œ íŒŒì‹±ëœ ë°ì´í„° ê°€ì ¸ì˜¤ê¸°
+        var parsedDataTable = CSVReader.Read($"{DATA_PATH}/{CHAPTER_DATA_TABLE}");
 
-        foreach (var data in parsedDataTable) // ÆÄ½ÌµÈ µ¥ÀÌÅÍ¸¦ ¼øÈ¸
+        // íŒŒì‹±ëœ ë°ì´í„° ìˆœíšŒ
+        foreach (var data in parsedDataTable)
         {
-            var chapterData = new ChapterData // »õ Ã©ÅÍ µ¥ÀÌÅÍ °´Ã¼ »ı¼º
+            // ì±•í„° ë°ì´í„° ê°ì²´ ìƒì„±
+            var chapterData = new ChapterData
             {
-                ChapterNo = Convert.ToInt32(data["chapter_no"]), // Ã©ÅÍ ¹øÈ£ ¼³Á¤
-                TotalStages = Convert.ToInt32(data["total_stages"]), // ÃÑ ½ºÅ×ÀÌÁö ¼ö ¼³Á¤
-                ChapterRewardGem = Convert.ToInt32(data["chapter_reward_gem"]), // Ã©ÅÍ Å¬¸®¾î º¸»ó º¸¼® ¼³Á¤
-                ChapterRewardGold = Convert.ToInt32(data["chapter_reward_gold"]), // Ã©ÅÍ Å¬¸®¾î º¸»ó °ñµå ¼³Á¤
+                // ì±•í„° ë²ˆí˜¸ ì„¤ì •
+                ChapterNo = Convert.ToInt32(data["chapter_no"]),
+                // ì´ ìŠ¤í…Œì´ì§€ ìˆ˜ ì„¤ì •
+                TotalStage = Convert.ToInt32(data["total_stages"]),
+                // ì±•í„° ë³´ìƒ ì ¬ ì„¤ì •
+                ChapterRewardGem = Convert.ToInt32(data["chapter_reward_gem"]),
+                // ì±•í„° ë³´ìƒ ê³¨ë“œ ì„¤ì •
+                ChapterRewardGold = Convert.ToInt32(data["chapter_reward_gold"]),
             };
 
-            ChapterDataTable.Add(chapterData); // ¸®½ºÆ®¿¡ Ã©ÅÍ µ¥ÀÌÅÍ Ãß°¡
+            // ì±•í„° ë°ì´í„°ë¥¼ ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€
+            ChapterDataTable.Add(chapterData);
         }
     }
 
-    // Æ¯Á¤ Ã©ÅÍ ¹øÈ£ÀÇ µ¥ÀÌÅÍ¸¦ ¹İÈ¯ÇÏ´Â ÇÔ¼ö
+    // íŠ¹ì • ì±•í„° ë²ˆí˜¸ì˜ ì±•í„° ë°ì´í„° ê°€ì ¸ì˜¤ê¸°
     public ChapterData GetChapterData(int chapterNo)
     {
-        return ChapterDataTable.Where(item => item.ChapterNo == chapterNo).FirstOrDefault(); // LINQ·Î Ã©ÅÍ ¹øÈ£¿¡ ÇØ´çÇÏ´Â µ¥ÀÌÅÍ °Ë»ö ÈÄ ¹İÈ¯
+        // LINQë¥¼ ì‚¬ìš©í•˜ì—¬ í•´ë‹¹ ì±•í„° ë²ˆí˜¸ì˜ ë°ì´í„° ë°˜í™˜
+        return ChapterDataTable.Where(item => item.ChapterNo == chapterNo).FirstOrDefault();
     }
+    // ì±•í„° ë°ì´í„° ê´€ë ¨ ì˜ì—­ ë
+    #endregion
+
+    // ì•„ì´í…œ ë°ì´í„° ê´€ë ¨ ì˜ì—­ ì‹œì‘
+    #region ITEM_DATA
+    // ì•„ì´í…œ ë°ì´í„° í…Œì´ë¸” íŒŒì¼ëª… ìƒìˆ˜
+    private const string ITEM_DATA_TABLE = "ItemDataTable";
+    // ì•„ì´í…œ ë°ì´í„° ë¦¬ìŠ¤íŠ¸
+    private List<ItemData> ItemDataTable = new List<ItemData>();
+
+    // ì•„ì´í…œ ë°ì´í„° í…Œì´ë¸” ë¡œë“œ ë©”ì„œë“œ
+    private void LoadItemDataTable()
+    {
+        // CSV íŒŒì¼ì„ ì½ì–´ì„œ íŒŒì‹±ëœ ë°ì´í„° ê°€ì ¸ì˜¤ê¸°
+        var parsedDataTable = CSVReader.Read($"{DATA_PATH}/{ITEM_DATA_TABLE}");
+
+        // íŒŒì‹±ëœ ë°ì´í„° ìˆœíšŒ
+        foreach (var data in parsedDataTable)
+        {
+            // ì•„ì´í…œ ë°ì´í„° ê°ì²´ ìƒì„±
+            var itemData = new ItemData
+            {
+                // ì•„ì´í…œ ID ì„¤ì •
+                ItemId = Convert.ToInt32(data["item_id"]),
+                // ì•„ì´í…œ ì´ë¦„ ì„¤ì •
+                ItemName = data["item_name"].ToString(),
+                // ê³µê²©ë ¥ ì„¤ì •
+                AttackPower = Convert.ToInt32(data["attack_power"]),
+                // ë°©ì–´ë ¥ ì„¤ì •
+                Defense = Convert.ToInt32(data["defense"]),
+            };
+
+            // ì•„ì´í…œ ë°ì´í„°ë¥¼ ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€
+            ItemDataTable.Add(itemData);
+        }
+    }
+
+    // íŠ¹ì • ì•„ì´í…œ IDì˜ ì•„ì´í…œ ë°ì´í„° ê°€ì ¸ì˜¤ê¸°
+    public ItemData GetItemData(int itemId)
+    {
+        // LINQë¥¼ ì‚¬ìš©í•˜ì—¬ í•´ë‹¹ ì•„ì´í…œ IDì˜ ë°ì´í„° ë°˜í™˜
+        return ItemDataTable.Where(item => item.ItemId == itemId).FirstOrDefault();
+    }
+    // ì•„ì´í…œ ë°ì´í„° ê´€ë ¨ ì˜ì—­ ë
+    #endregion
 }
 
-// Ã©ÅÍ µ¥ÀÌÅÍ Å¬·¡½º
+// ì±•í„° ë°ì´í„° í´ë˜ìŠ¤
 public class ChapterData
 {
-    public int ChapterNo; // Ã©ÅÍ ¹øÈ£
-    public int TotalStages; // ÃÑ ½ºÅ×ÀÌÁö ¼ö
-    public int ChapterRewardGem; // Ã©ÅÍ Å¬¸®¾î º¸»ó º¸¼®
-    public int ChapterRewardGold; // Ã©ÅÍ Å¬¸®¾î º¸»ó °ñµå
+    // ì±•í„° ë²ˆí˜¸
+    public int ChapterNo;
+    // ì´ ìŠ¤í…Œì´ì§€ ìˆ˜
+    public int TotalStage;
+    // ì±•í„° ë³´ìƒ ì ¬
+    public int ChapterRewardGem;
+    // ì±•í„° ë³´ìƒ ê³¨ë“œ
+    public int ChapterRewardGold;
+}
+
+// ì•„ì´í…œ ë°ì´í„° í´ë˜ìŠ¤
+public class ItemData
+{
+    // ì•„ì´í…œ ID
+    public int ItemId;
+    // ì•„ì´í…œ ì´ë¦„
+    public string ItemName;
+    // ê³µê²©ë ¥
+    public int AttackPower;
+    // ë°©ì–´ë ¥
+    public int Defense;
+}
+
+// ì•„ì´í…œ íƒ€ì… ì—´ê±°í˜•
+public enum ItemType
+{
+    // ë¬´ê¸°
+    Weapon = 1,
+    // ë°©íŒ¨
+    Shield,
+    // í‰ê°‘
+    ChestArmor,
+    // ì¥ê°‘
+    Gloves,
+    // ë¶€ì¸ 
+    Boots,
+    // ì•…ì„¸ì„œë¦¬
+    Accessory
+}
+
+// ì•„ì´í…œ ë“±ê¸‰ ì—´ê±°í˜•
+public enum ItemGrade
+{
+    // ì¼ë°˜
+    Common = 1,
+    // ê³ ê¸‰
+    Uncommon,
+    // í¬ê·€
+    Rare,
+    // ì˜ì›…
+    Epic,
+    // ì „ì„¤
+    Legendary,
 }

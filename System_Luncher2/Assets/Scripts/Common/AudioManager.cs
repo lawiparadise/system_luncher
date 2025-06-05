@@ -1,91 +1,91 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// BGM Å¸ÀÔ ¿­°ÅÇü
+// BGM íƒ€ì… ì—´ê±°í˜•
 public enum BGM
 {
-    lobby, // ·Îºñ BGM
-    COUNT // ÃÑ BGM °³¼ö
+    lobby, // ë¡œë¹„ BGM
+    COUNT // ì´ BGM ê°œìˆ˜
 }
 
-// SFX Å¸ÀÔ ¿­°ÅÇü
+// SFX íƒ€ì… ì—´ê±°í˜•
 public enum SFX
 {
-    chapter_clear, // Ã©ÅÍ Å¬¸®¾î È¿°úÀ½
-    stage_clear, // ½ºÅ×ÀÌÁö Å¬¸®¾î È¿°úÀ½
-    ui_button_click, // UI ¹öÆ° Å¬¸¯ È¿°úÀ½
-    COUNT // ÃÑ SFX °³¼ö
+    chapter_clear, // ì±•í„° í´ë¦¬ì–´ íš¨ê³¼ìŒ
+    stage_clear, // ìŠ¤í…Œì´ì§€ í´ë¦¬ì–´ íš¨ê³¼ìŒ
+    ui_button_click, // UI ë²„íŠ¼ í´ë¦­ íš¨ê³¼ìŒ
+    COUNT // ì´ SFX ê°œìˆ˜
 }
 
-// ¿Àµğ¿À¸¦ °ü¸®ÇÏ´Â ½Ì±ÛÅæ ¸Å´ÏÀú Å¬·¡½º
+// ì˜¤ë””ì˜¤ë¥¼ ê´€ë¦¬í•˜ëŠ” ì‹±ê¸€í†¤ ë§¤ë‹ˆì € í´ë˜ìŠ¤
 public class AudioManager : SingletonBehaviour<AudioManager>
 {
-    public Transform BGMTrs; // BGM ¿Àµğ¿À ¼Ò½ºµéÀÇ ºÎ¸ğ Æ®·£½ºÆû
-    public Transform SFXTrs; // SFX ¿Àµğ¿À ¼Ò½ºµéÀÇ ºÎ¸ğ Æ®·£½ºÆû
+    public Transform BGMTrs; // BGM ì˜¤ë””ì˜¤ ì†ŒìŠ¤ë“¤ì˜ ë¶€ëª¨ íŠ¸ëœìŠ¤í¼
+    public Transform SFXTrs; // SFX ì˜¤ë””ì˜¤ ì†ŒìŠ¤ë“¤ì˜ ë¶€ëª¨ íŠ¸ëœìŠ¤í¼
 
-    private const string AUDIO_PATH = "Audio"; // ¿Àµğ¿À ¸®¼Ò½º ÆÄÀÏ °æ·Î
+    private const string AUDIO_PATH = "Audio"; // ì˜¤ë””ì˜¤ ë¦¬ì†ŒìŠ¤ íŒŒì¼ ê²½ë¡œ
 
-    private Dictionary<BGM, AudioSource> m_BGMPlayer = new Dictionary<BGM, AudioSource>(); // BGM ÇÃ·¹ÀÌ¾î µñ¼Å³Ê¸®
-    private AudioSource m_CurrBGMSource; // ÇöÀç Àç»ı ÁßÀÎ BGM ¼Ò½º
+    private Dictionary<BGM, AudioSource> m_BGMPlayer = new Dictionary<BGM, AudioSource>(); // BGM í”Œë ˆì´ì–´ ë”•ì…”ë„ˆë¦¬
+    private AudioSource m_CurrBGMSource; // í˜„ì¬ ì¬ìƒ ì¤‘ì¸ BGM ì†ŒìŠ¤
 
-    private Dictionary<SFX, AudioSource> m_SFXPlayer = new Dictionary<SFX, AudioSource>(); // SFX ÇÃ·¹ÀÌ¾î µñ¼Å³Ê¸®
+    private Dictionary<SFX, AudioSource> m_SFXPlayer = new Dictionary<SFX, AudioSource>(); // SFX í”Œë ˆì´ì–´ ë”•ì…”ë„ˆë¦¬
 
-    // ÃÊ±âÈ­ ÇÔ¼ö
+    // ì´ˆê¸°í™” í•¨ìˆ˜
     protected override void Init()
     {
-        base.Init(); // ºÎ¸ğ Å¬·¡½º ÃÊ±âÈ­ È£Ãâ
+        base.Init(); // ë¶€ëª¨ í´ë˜ìŠ¤ ì´ˆê¸°í™” í˜¸ì¶œ
 
-        LoadBGMPlayer(); // BGM ÇÃ·¹ÀÌ¾î ·Îµå
-        LoadSFXPlayer(); // SFX ÇÃ·¹ÀÌ¾î ·Îµå
+        LoadBGMPlayer(); // BGM í”Œë ˆì´ì–´ ë¡œë“œ
+        LoadSFXPlayer(); // SFX í”Œë ˆì´ì–´ ë¡œë“œ
     }
 
-    // BGM ÇÃ·¹ÀÌ¾îµéÀ» ·ÎµåÇÏ´Â ÇÔ¼ö
+    // BGM í”Œë ˆì´ì–´ë“¤ì„ ë¡œë“œí•˜ëŠ” í•¨ìˆ˜
     private void LoadBGMPlayer()
     {
-        for (int i = 0; i < (int)BGM.COUNT; i++) // ¸ğµç BGM Å¸ÀÔ¿¡ ´ëÇØ ¹İº¹
+        for (int i = 0; i < (int)BGM.COUNT; i++) // ëª¨ë“  BGM íƒ€ì…ì— ëŒ€í•´ ë°˜ë³µ
         {
-            var audioName = ((BGM)i).ToString(); // BGM ÀÌ¸§ °¡Á®¿À±â
-            var pathStr = $"{AUDIO_PATH}/{audioName}"; // ¿Àµğ¿À ÆÄÀÏ °æ·Î »ı¼º
-            var audioClip = Resources.Load(pathStr, typeof(AudioClip)) as AudioClip; // ¿Àµğ¿À Å¬¸³ ·Îµå
-            if (!audioClip) // ¿Àµğ¿À Å¬¸³ÀÌ ¾ø´Â °æ¿ì
+            var audioName = ((BGM)i).ToString(); // BGM ì´ë¦„ ê°€ì ¸ì˜¤ê¸°
+            var pathStr = $"{AUDIO_PATH}/{audioName}"; // ì˜¤ë””ì˜¤ íŒŒì¼ ê²½ë¡œ ìƒì„±
+            var audioClip = Resources.Load(pathStr, typeof(AudioClip)) as AudioClip; // ì˜¤ë””ì˜¤ í´ë¦½ ë¡œë“œ
+            if (!audioClip) // ì˜¤ë””ì˜¤ í´ë¦½ì´ ì—†ëŠ” ê²½ìš°
             {
-                Logger.LogError($"{audioName} clip does not exist."); // ¿¡·¯ ·Î±× Ãâ·Â
-                continue; // ´ÙÀ½ ·çÇÁ·Î °Ç³Ê¶Ù±â
+                Logger.LogError($"{audioName} clip does not exist."); // ì—ëŸ¬ ë¡œê·¸ ì¶œë ¥
+                continue; // ë‹¤ìŒ ë£¨í”„ë¡œ ê±´ë„ˆë›°ê¸°
             }
 
-            var newGO = new GameObject(audioName); // »õ °ÔÀÓ ¿ÀºêÁ§Æ® »ı¼º
-            var newAudioSource = newGO.AddComponent<AudioSource>(); // ¿Àµğ¿À ¼Ò½º ÄÄÆ÷³ÍÆ® Ãß°¡
-            newAudioSource.clip = audioClip; // ¿Àµğ¿À Å¬¸³ ¼³Á¤
-            newAudioSource.loop = true; // ¹İº¹ Àç»ı ¼³Á¤
-            newAudioSource.playOnAwake = false; // ÀÚµ¿ Àç»ı ºñÈ°¼ºÈ­
-            newGO.transform.parent = BGMTrs; // ºÎ¸ğ Æ®·£½ºÆû ¼³Á¤
+            var newGO = new GameObject(audioName); // ìƒˆ ê²Œì„ ì˜¤ë¸Œì íŠ¸ ìƒì„±
+            var newAudioSource = newGO.AddComponent<AudioSource>(); // ì˜¤ë””ì˜¤ ì†ŒìŠ¤ ì»´í¬ë„ŒíŠ¸ ì¶”ê°€
+            newAudioSource.clip = audioClip; // ì˜¤ë””ì˜¤ í´ë¦½ ì„¤ì •
+            newAudioSource.loop = true; // ë°˜ë³µ ì¬ìƒ ì„¤ì •
+            newAudioSource.playOnAwake = false; // ìë™ ì¬ìƒ ë¹„í™œì„±í™”
+            newGO.transform.parent = BGMTrs; // ë¶€ëª¨ íŠ¸ëœìŠ¤í¼ ì„¤ì •
 
-            m_BGMPlayer[(BGM)i] = newAudioSource; // µñ¼Å³Ê¸®¿¡ ¿Àµğ¿À ¼Ò½º Ãß°¡
+            m_BGMPlayer[(BGM)i] = newAudioSource; // ë”•ì…”ë„ˆë¦¬ì— ì˜¤ë””ì˜¤ ì†ŒìŠ¤ ì¶”ê°€
         }
     }
 
-    // SFX ÇÃ·¹ÀÌ¾îµéÀ» ·ÎµåÇÏ´Â ÇÔ¼ö
+    // SFX í”Œë ˆì´ì–´ë“¤ì„ ë¡œë“œí•˜ëŠ” í•¨ìˆ˜
     private void LoadSFXPlayer()
     {
-        for (int i = 0; i < (int)SFX.COUNT; i++) // ¸ğµç SFX Å¸ÀÔ¿¡ ´ëÇØ ¹İº¹
+        for (int i = 0; i < (int)SFX.COUNT; i++) // ëª¨ë“  SFX íƒ€ì…ì— ëŒ€í•´ ë°˜ë³µ
         {
-            var audioName = ((SFX)i).ToString(); // SFX ÀÌ¸§ °¡Á®¿À±â
-            var pathStr = $"{AUDIO_PATH}/{audioName}"; // ¿Àµğ¿À ÆÄÀÏ °æ·Î »ı¼º
-            var audioClip = Resources.Load(pathStr, typeof(AudioClip)) as AudioClip; // ¿Àµğ¿À Å¬¸³ ·Îµå
-            if (!audioClip) // ¿Àµğ¿À Å¬¸³ÀÌ ¾ø´Â °æ¿ì
+            var audioName = ((SFX)i).ToString(); // SFX ì´ë¦„ ê°€ì ¸ì˜¤ê¸°
+            var pathStr = $"{AUDIO_PATH}/{audioName}"; // ì˜¤ë””ì˜¤ íŒŒì¼ ê²½ë¡œ ìƒì„±
+            var audioClip = Resources.Load(pathStr, typeof(AudioClip)) as AudioClip; // ì˜¤ë””ì˜¤ í´ë¦½ ë¡œë“œ
+            if (!audioClip) // ì˜¤ë””ì˜¤ í´ë¦½ì´ ì—†ëŠ” ê²½ìš°
             {
-                Logger.LogError($"{audioName} clip does not exist."); // ¿¡·¯ ·Î±× Ãâ·Â
-                continue; // ´ÙÀ½ ·çÇÁ·Î °Ç³Ê¶Ù±â
+                Logger.LogError($"{audioName} clip does not exist."); // ì—ëŸ¬ ë¡œê·¸ ì¶œë ¥
+                continue; // ë‹¤ìŒ ë£¨í”„ë¡œ ê±´ë„ˆë›°ê¸°
             }
 
-            var newGO = new GameObject(audioName); // »õ °ÔÀÓ ¿ÀºêÁ§Æ® »ı¼º
-            var newAudioSource = newGO.AddComponent<AudioSource>(); // ¿Àµğ¿À ¼Ò½º ÄÄÆ÷³ÍÆ® Ãß°¡
-            newAudioSource.clip = audioClip; // ¿Àµğ¿À Å¬¸³ ¼³Á¤
-            newAudioSource.loop = false; // ¹İº¹ Àç»ı ºñÈ°¼ºÈ­
-            newAudioSource.playOnAwake = false; // ÀÚµ¿ Àç»ı ºñÈ°¼ºÈ­
-            newGO.transform.parent = SFXTrs; // ºÎ¸ğ Æ®·£½ºÆû ¼³Á¤
+            var newGO = new GameObject(audioName); // ìƒˆ ê²Œì„ ì˜¤ë¸Œì íŠ¸ ìƒì„±
+            var newAudioSource = newGO.AddComponent<AudioSource>(); // ì˜¤ë””ì˜¤ ì†ŒìŠ¤ ì»´í¬ë„ŒíŠ¸ ì¶”ê°€
+            newAudioSource.clip = audioClip; // ì˜¤ë””ì˜¤ í´ë¦½ ì„¤ì •
+            newAudioSource.loop = false; // ë°˜ë³µ ì¬ìƒ ë¹„í™œì„±í™”
+            newAudioSource.playOnAwake = false; // ìë™ ì¬ìƒ ë¹„í™œì„±í™”
+            newGO.transform.parent = SFXTrs; // ë¶€ëª¨ íŠ¸ëœìŠ¤í¼ ì„¤ì •
 
-            m_SFXPlayer[(SFX)i] = newAudioSource; // µñ¼Å³Ê¸®¿¡ ¿Àµğ¿À ¼Ò½º Ãß°¡
+            m_SFXPlayer[(SFX)i] = newAudioSource; // ë”•ì…”ë„ˆë¦¬ì— ì˜¤ë””ì˜¤ ì†ŒìŠ¤ ì¶”ê°€
         }
     }
 
@@ -108,80 +108,80 @@ public class AudioManager : SingletonBehaviour<AudioManager>
 
 
 
-    // BGM Àç»ı ÇÔ¼ö
+    // BGM ì¬ìƒ í•¨ìˆ˜
     public void PlayBGM(BGM bgm)
     {
-        if (m_CurrBGMSource) // ÇöÀç Àç»ı ÁßÀÎ BGMÀÌ ÀÖ´Â °æ¿ì
+        if (m_CurrBGMSource) // í˜„ì¬ ì¬ìƒ ì¤‘ì¸ BGMì´ ìˆëŠ” ê²½ìš°
         {
-            m_CurrBGMSource.Stop(); // ÇöÀç BGM Á¤Áö
-            m_CurrBGMSource = null; // ÇöÀç BGM ¼Ò½º ÃÊ±âÈ­
+            m_CurrBGMSource.Stop(); // í˜„ì¬ BGM ì •ì§€
+            m_CurrBGMSource = null; // í˜„ì¬ BGM ì†ŒìŠ¤ ì´ˆê¸°í™”
         }
 
-        if (!m_BGMPlayer.ContainsKey(bgm)) // ¿äÃ»ÇÑ BGMÀÌ µñ¼Å³Ê¸®¿¡ ¾ø´Â °æ¿ì
+        if (!m_BGMPlayer.ContainsKey(bgm)) // ìš”ì²­í•œ BGMì´ ë”•ì…”ë„ˆë¦¬ì— ì—†ëŠ” ê²½ìš°
         {
-            Logger.LogError($"Invalid clip name. {bgm}"); // ¿¡·¯ ·Î±× Ãâ·Â
-            return; // ÇÔ¼ö Á¾·á
+            Logger.LogError($"Invalid clip name. {bgm}"); // ì—ëŸ¬ ë¡œê·¸ ì¶œë ¥
+            return; // í•¨ìˆ˜ ì¢…ë£Œ
         }
 
-        m_CurrBGMSource = m_BGMPlayer[bgm]; // »õ BGM ¼Ò½º ¼³Á¤
-        m_CurrBGMSource.Play(); // BGM Àç»ı ½ÃÀÛ
+        m_CurrBGMSource = m_BGMPlayer[bgm]; // ìƒˆ BGM ì†ŒìŠ¤ ì„¤ì •
+        m_CurrBGMSource.Play(); // BGM ì¬ìƒ ì‹œì‘
     }
 
-    // BGM ÀÏ½ÃÁ¤Áö ÇÔ¼ö
+    // BGM ì¼ì‹œì •ì§€ í•¨ìˆ˜
     public void PauseBGM()
     {
-        if (m_CurrBGMSource) m_CurrBGMSource.Pause(); // ÇöÀç BGMÀÌ ÀÖÀ¸¸é ÀÏ½ÃÁ¤Áö
+        if (m_CurrBGMSource) m_CurrBGMSource.Pause(); // í˜„ì¬ BGMì´ ìˆìœ¼ë©´ ì¼ì‹œì •ì§€
     }
 
-    // BGM Àç»ı Àç°³ ÇÔ¼ö
+    // BGM ì¬ìƒ ì¬ê°œ í•¨ìˆ˜
     public void ResumeBGM()
     {
-        if (m_CurrBGMSource) m_CurrBGMSource.UnPause(); // ÇöÀç BGMÀÌ ÀÖÀ¸¸é Àç»ı Àç°³
+        if (m_CurrBGMSource) m_CurrBGMSource.UnPause(); // í˜„ì¬ BGMì´ ìˆìœ¼ë©´ ì¬ìƒ ì¬ê°œ
     }
 
-    // BGM Á¤Áö ÇÔ¼ö
+    // BGM ì •ì§€ í•¨ìˆ˜
     public void StopBGM()
     {
-        if (m_CurrBGMSource) m_CurrBGMSource.Stop(); // ÇöÀç BGMÀÌ ÀÖÀ¸¸é Á¤Áö
+        if (m_CurrBGMSource) m_CurrBGMSource.Stop(); // í˜„ì¬ BGMì´ ìˆìœ¼ë©´ ì •ì§€
     }
 
-    // SFX Àç»ı ÇÔ¼ö
+    // SFX ì¬ìƒ í•¨ìˆ˜
     public void PlaySFX(SFX sfx)
     {
-        if (!m_SFXPlayer.ContainsKey(sfx)) // ¿äÃ»ÇÑ SFX°¡ µñ¼Å³Ê¸®¿¡ ¾ø´Â °æ¿ì
+        if (!m_SFXPlayer.ContainsKey(sfx)) // ìš”ì²­í•œ SFXê°€ ë”•ì…”ë„ˆë¦¬ì— ì—†ëŠ” ê²½ìš°
         {
-            Logger.LogError($"Invalid clip name. ({sfx})"); // ¿¡·¯ ·Î±× Ãâ·Â
-            return; // ÇÔ¼ö Á¾·á
+            Logger.LogError($"Invalid clip name. ({sfx})"); // ì—ëŸ¬ ë¡œê·¸ ì¶œë ¥
+            return; // í•¨ìˆ˜ ì¢…ë£Œ
         }
 
-        m_SFXPlayer[sfx].Play(); // SFX Àç»ı
+        m_SFXPlayer[sfx].Play(); // SFX ì¬ìƒ
     }
 
-    // ¸ğµç ¿Àµğ¿À À½¼Ò°Å ÇÔ¼ö
+    // ëª¨ë“  ì˜¤ë””ì˜¤ ìŒì†Œê±° í•¨ìˆ˜
     public void Mute()
     {
-        foreach (var audioSourceItem in m_BGMPlayer) // ¸ğµç BGM ÇÃ·¹ÀÌ¾î¿¡ ´ëÇØ
+        foreach (var audioSourceItem in m_BGMPlayer) // ëª¨ë“  BGM í”Œë ˆì´ì–´ì— ëŒ€í•´
         {
-            audioSourceItem.Value.volume = 0f; // º¼·ıÀ» 0À¸·Î ¼³Á¤
+            audioSourceItem.Value.volume = 0f; // ë³¼ë¥¨ì„ 0ìœ¼ë¡œ ì„¤ì •
         }
 
-        foreach (var audioSourceItem in m_SFXPlayer) // ¸ğµç SFX ÇÃ·¹ÀÌ¾î¿¡ ´ëÇØ
+        foreach (var audioSourceItem in m_SFXPlayer) // ëª¨ë“  SFX í”Œë ˆì´ì–´ì— ëŒ€í•´
         {
-            audioSourceItem.Value.volume = 0f; // º¼·ıÀ» 0À¸·Î ¼³Á¤
+            audioSourceItem.Value.volume = 0f; // ë³¼ë¥¨ì„ 0ìœ¼ë¡œ ì„¤ì •
         }
     }
 
-    // ¸ğµç ¿Àµğ¿À À½¼Ò°Å ÇØÁ¦ ÇÔ¼ö
+    // ëª¨ë“  ì˜¤ë””ì˜¤ ìŒì†Œê±° í•´ì œ í•¨ìˆ˜
     public void UnMute()
     {
-        foreach (var audioSourceItem in m_BGMPlayer) // ¸ğµç BGM ÇÃ·¹ÀÌ¾î¿¡ ´ëÇØ
+        foreach (var audioSourceItem in m_BGMPlayer) // ëª¨ë“  BGM í”Œë ˆì´ì–´ì— ëŒ€í•´
         {
-            audioSourceItem.Value.volume = 1f; // º¼·ıÀ» 1·Î ¼³Á¤
+            audioSourceItem.Value.volume = 1f; // ë³¼ë¥¨ì„ 1ë¡œ ì„¤ì •
         }
 
-        foreach (var audioSourceItem in m_SFXPlayer) // ¸ğµç SFX ÇÃ·¹ÀÌ¾î¿¡ ´ëÇØ
+        foreach (var audioSourceItem in m_SFXPlayer) // ëª¨ë“  SFX í”Œë ˆì´ì–´ì— ëŒ€í•´
         {
-            audioSourceItem.Value.volume = 1f; // º¼·ıÀ» 1·Î ¼³Á¤
+            audioSourceItem.Value.volume = 1f; // ë³¼ë¥¨ì„ 1ë¡œ ì„¤ì •
         }
     }
 }

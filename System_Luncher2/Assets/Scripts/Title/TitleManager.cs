@@ -6,11 +6,11 @@ using UnityEngine.UI;
 
 public class TitleManager : MonoBehaviour
 {
-    //·Î°í
+    //ë¡œê³ 
     public Animation LogoAnim;
     public TextMeshProUGUI LogoTxt;
 
-    //Å¸ÀÌÆ²
+    //íƒ€ì´í‹€
     public GameObject Title;
     public Slider LoadingSlider;
     public TextMeshProUGUI LoadingProgressTxt;
@@ -26,25 +26,31 @@ public class TitleManager : MonoBehaviour
 
     private void Start()
     {
-        //À¯Àú µ¥ÀÌÅÍ ·Îµå
+        //ìœ ì € ë°ì´í„° ë¡œë“œ
         UserDataManager.Instance.LoadUserData();
 
-        //ÀúÀåµÈ À¯Àú µ¥ÀÌÅÍ°¡ ¾øÀ¸¸é ±âº»°ªÀ¸·Î ¼¼ÆÃ ÈÄ ÀúÀå
+        //ì €ì¥ëœ ìœ ì € ë°ì´í„°ê°€ ì—†ìœ¼ë©´ ê¸°ë³¸ê°’ìœ¼ë¡œ ì„¸íŒ… í›„ ì €ì¥
         if (!UserDataManager.Instance.ExistsSavedData)
         {
-            UserDataManager.Instance.SetDefaultUserData(); // ±âº» µ¥ÀÌÅÍ ¼³Á¤
-            UserDataManager.Instance.SaveUserData(); // ±âº» µ¥ÀÌÅÍ ÀúÀå
+            UserDataManager.Instance.SetDefaultUserData(); // ê¸°ë³¸ ë°ì´í„° ì„¤ì •
+            UserDataManager.Instance.SaveUserData(); // ê¸°ë³¸ ë°ì´í„° ì €ì¥
         }
+
+        // ChapterData chapterData1 = DataTableManager.Instance.GetChapterData(10);
+        // ChapterData chapterData2 = DataTableManager.Instance.GetChapterData(50);
+        // return;
 
         //var confirmUIData = new ConfirmUIData();
         //confirmUIData.ConfirmType = ConfirmType.OK_CANCEL;
         //confirmUIData.TitleTxt = "UI Test";
         //confirmUIData.DescTxt = "This is UI Text.";
-        //confirmUIData.OKBtnTxt = "È®ÀÎ";
-        //confirmUIData.CancelBtnTxt = "Ãë¼Ò";
+        //confirmUIData.OKBtnTxt = "í™•ì¸";
+        //confirmUIData.CancelBtnTxt = "ì·¨ì†Œ";
         //UIManager.Instance.OpenUI<ConfirmUI>(confirmUIData);
 
         AudioManager.Instance.OnLoadUserData();
+
+        // UIManager.Instance.EnableStatsUI(false);
 
         StartCoroutine(LoadGameCo());
     }
@@ -53,8 +59,14 @@ public class TitleManager : MonoBehaviour
     {
         Logger.Log($"{GetType()}::LoadGameCo");
 
+        // AudioManager.Instance.PlayBGM(BGM.lobby);
+        // yield return new WaitForSeconds(3f);
+        // AudioManager.Instance.PauseBGM();
+        // yield return new WaitForSeconds(3f);
+        // AudioManager.Instance.ResumeBGM();
+        // yield return new WaitForSeconds(3f);
+        // AudioManager.Instance.StopBGM();
 
-        
 
 
 
@@ -75,20 +87,20 @@ public class TitleManager : MonoBehaviour
         m_AsyncOperation.allowSceneActivation = false;
 
         /*
-        * ·Îµù ½Ã°£ÀÌ ÂªÀº °æ¿ì ·Îµù ½½¶óÀÌ´õ º¯È­°¡ ³Ê¹« »¡¶ó º¸ÀÌÁö ¾ÊÀ» ¼ö ÀÖ´Ù.
-        * ÀÏºÎ·¯ ¸î ÃÊ °£ 50%·Î º¸¿©ÁÜÀ¸·Î½á ½Ã°¢ÀûÀ¸·Î ´õ ÀÚ¿¬½º·´°Ô Ã³¸®ÇÑ´Ù.
+        * ë¡œë”© ì‹œê°„ì´ ì§§ì€ ê²½ìš° ë¡œë”© ìŠ¬ë¼ì´ë” ë³€í™”ê°€ ë„ˆë¬´ ë¹¨ë¼ ë³´ì´ì§€ ì•Šì„ ìˆ˜ ìˆë‹¤.
+        * ì¼ë¶€ëŸ¬ ëª‡ ì´ˆ ê°„ 50%ë¡œ ë³´ì—¬ì¤Œìœ¼ë¡œì¨ ì‹œê°ì ìœ¼ë¡œ ë” ìì—°ìŠ¤ëŸ½ê²Œ ì²˜ë¦¬í•œë‹¤.
         */
         LoadingSlider.value = 0.5f;
         LoadingProgressTxt.text = $"{(int)(LoadingSlider.value * 100)}%";
         yield return new WaitForSeconds(0.5f);
 
-        while (!m_AsyncOperation.isDone) //·ÎµùÀÌ ÁøÇà ÁßÀÏ ¶§ 
+        while (!m_AsyncOperation.isDone) //ë¡œë”©ì´ ì§„í–‰ ì¤‘ì¼ ë•Œ 
         {
-            //·Îµù ½½¶óÀÌ´õ ¾÷µ¥ÀÌÆ®
+            //ë¡œë”© ìŠ¬ë¼ì´ë” ì—…ë°ì´íŠ¸
             LoadingSlider.value = m_AsyncOperation.progress < 0.5f ? 0.5f : m_AsyncOperation.progress;
             LoadingProgressTxt.text = $"{(int)(LoadingSlider.value * 100)}%";
 
-            //¾À ·ÎµùÀÌ ¿Ï·áµÇ¾ú´Ù¸é ·Îºñ·Î ÀüÈ¯ÇÏ°í ÄÚ·çÆ¾ Á¾·á
+            //ì”¬ ë¡œë”©ì´ ì™„ë£Œë˜ì—ˆë‹¤ë©´ ë¡œë¹„ë¡œ ì „í™˜í•˜ê³  ì½”ë£¨í‹´ ì¢…ë£Œ
             if (m_AsyncOperation.progress >= 0.9f)
             {
                 m_AsyncOperation.allowSceneActivation = true;

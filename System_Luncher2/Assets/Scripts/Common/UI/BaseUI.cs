@@ -2,86 +2,86 @@ using System;
 using UnityEngine;
 
 
-//UI µ¥ÀÌÅÍ¸¦ ´ã´Â Å¬·¡½º
+//UI ë°ì´í„°ë¥¼ ë‹´ëŠ” í´ë˜ìŠ¤
 public class BaseUIData
 {
-    public Action OnShow;  //UI°¡ Ç¥½ÃµÉ ¶§ ½ÇÇàÇÒ Äİ¹é
-    public Action OnClose; //UI°¡ ´İÈú ¶§ ½ÇÇàÇÒ Äİ¹é
+    public Action OnShow;  //UIê°€ í‘œì‹œë  ë•Œ ì‹¤í–‰í•  ì½œë°±
+    public Action OnClose; //UIê°€ ë‹«í ë•Œ ì‹¤í–‰í•  ì½œë°±
 }
 
 
 
-//¸ğµç UIÀÇ ±âº» Å¬·¡½º
+//ëª¨ë“  UIì˜ ê¸°ë³¸ í´ë˜ìŠ¤
 public class BaseUI : MonoBehaviour
 {
-    public Animation m_UIOpenAnim; //UI ¿­¸² ¾Ö´Ï¸ŞÀÌ¼Ç
+    public Animation m_UIOpenAnim; //UI ì—´ë¦¼ ì• ë‹ˆë©”ì´ì…˜
 
-    private Action m_OnShow;    //UI Ç¥½Ã ½Ã ½ÇÇàÇÒ ¾×¼Ç
-    private Action m_OnClose;   //UI ´İ±â ½Ã ½ÇÇàÇÒ ¾×¼Ç
+    private Action m_OnShow;    //UI í‘œì‹œ ì‹œ ì‹¤í–‰í•  ì•¡ì…˜
+    private Action m_OnClose;   //UI ë‹«ê¸° ì‹œ ì‹¤í–‰í•  ì•¡ì…˜
 
 
-    // UI ÃÊ±âÈ­ ¸Ş¼­µå
+    // UI ì´ˆê¸°í™” ë©”ì„œë“œ
     public virtual void Init(Transform anchor)
     {
-        Logger.Log($"{GetType()} init.");    // ÃÊ±âÈ­ ·Î±× Ãâ·Â
+        Logger.Log($"{GetType()} init.");    // ì´ˆê¸°í™” ë¡œê·¸ ì¶œë ¥
 
-        m_OnShow = null;     // Ç¥½Ã ¾×¼Ç ÃÊ±âÈ­
-        m_OnClose = null;    // ´İ±â ¾×¼Ç ÃÊ±âÈ­
+        m_OnShow = null;     // í‘œì‹œ ì•¡ì…˜ ì´ˆê¸°í™”
+        m_OnClose = null;    // ë‹«ê¸° ì•¡ì…˜ ì´ˆê¸°í™”
 
-        transform.SetParent(anchor);    // ºÎ¸ğ Transform ¼³Á¤
+        transform.SetParent(anchor);    // ë¶€ëª¨ Transform ì„¤ì •
 
-        var rectTransform = GetComponent<RectTransform>();    // RectTransform ÄÄÆ÷³ÍÆ® °¡Á®¿À±â
-        if (!rectTransform)    // RectTransformÀÌ ¾ø´Â °æ¿ì
+        var rectTransform = GetComponent<RectTransform>();    // RectTransform ì»´í¬ë„ŒíŠ¸ ê°€ì ¸ì˜¤ê¸°
+        if (!rectTransform)    // RectTransformì´ ì—†ëŠ” ê²½ìš°
         {
-            Logger.LogError("UI does not have rectransform.");    // ¿¡·¯ ·Î±× Ãâ·Â
-            return;    // ¸Ş¼­µå Á¾·á
+            Logger.LogError("UI does not have rectransform.");    // ì—ëŸ¬ ë¡œê·¸ ì¶œë ¥
+            return;    // ë©”ì„œë“œ ì¢…ë£Œ
         }
 
-        rectTransform.localPosition = new Vector3(0f, 0f, 0f);    // ·ÎÄÃ À§Ä¡ ¼³Á¤
-        rectTransform.localScale = new Vector3(1f, 1f, 1f);       // ·ÎÄÃ ½ºÄÉÀÏ ¼³Á¤
-        rectTransform.offsetMin = new Vector2(0, 0);              // ÃÖ¼Ò ¿ÀÇÁ¼Â ¼³Á¤
-        rectTransform.offsetMax = new Vector2(0, 0);              // ÃÖ´ë ¿ÀÇÁ¼Â ¼³Á¤
+        rectTransform.localPosition = new Vector3(0f, 0f, 0f);    // ë¡œì»¬ ìœ„ì¹˜ ì„¤ì •
+        rectTransform.localScale = new Vector3(1f, 1f, 1f);       // ë¡œì»¬ ìŠ¤ì¼€ì¼ ì„¤ì •
+        rectTransform.offsetMin = new Vector2(0, 0);              // ìµœì†Œ ì˜¤í”„ì…‹ ì„¤ì •
+        rectTransform.offsetMax = new Vector2(0, 0);              // ìµœëŒ€ ì˜¤í”„ì…‹ ì„¤ì •
     }
 
-    // UI Á¤º¸ ¼³Á¤ ¸Ş¼­µå
+    // UI ì •ë³´ ì„¤ì • ë©”ì„œë“œ
     public virtual void SetInfo(BaseUIData uiData)
     {
-        Logger.Log($"{GetType()} set info.");    // Á¤º¸ ¼³Á¤ ·Î±× Ãâ·Â
+        Logger.Log($"{GetType()} set info.");    // ì •ë³´ ì„¤ì • ë¡œê·¸ ì¶œë ¥
 
-        m_OnShow = uiData.OnShow;      // Ç¥½Ã Äİ¹é ¼³Á¤
-        m_OnClose = uiData.OnClose;    // ´İ±â Äİ¹é ¼³Á¤
+        m_OnShow = uiData.OnShow;      // í‘œì‹œ ì½œë°± ì„¤ì •
+        m_OnClose = uiData.OnClose;    // ë‹«ê¸° ì½œë°± ì„¤ì •
     }
 
 
-    // UI Ç¥½Ã ¸Ş¼­µå
+    // UI í‘œì‹œ ë©”ì„œë“œ
     public virtual void ShowUI()
     {
-        if (m_UIOpenAnim)    // ¿­¸² ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ÀÖ´Â °æ¿ì
+        if (m_UIOpenAnim)    // ì—´ë¦¼ ì• ë‹ˆë©”ì´ì…˜ì´ ìˆëŠ” ê²½ìš°
         {
-            m_UIOpenAnim.Play();    // ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı
+            m_UIOpenAnim.Play();    // ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ
         }
 
-        m_OnShow?.Invoke();    // Ç¥½Ã Äİ¹é ½ÇÇà
-        m_OnShow = null;       // Ç¥½Ã Äİ¹é ÃÊ±âÈ­
+        m_OnShow?.Invoke();    // í‘œì‹œ ì½œë°± ì‹¤í–‰
+        m_OnShow = null;       // í‘œì‹œ ì½œë°± ì´ˆê¸°í™”
     }
 
-    // UI ´İ±â ¸Ş¼­µå
+    // UI ë‹«ê¸° ë©”ì„œë“œ
     public virtual void CloseUI(bool isCloseAll = false)
     {
-        if (!isCloseAll)    // ÀüÃ¼ ´İ±â°¡ ¾Æ´Ñ °æ¿ì
+        if (!isCloseAll)    // ì „ì²´ ë‹«ê¸°ê°€ ì•„ë‹Œ ê²½ìš°
         {
-            m_OnClose?.Invoke();    // ´İ±â Äİ¹é ½ÇÇà
+            m_OnClose?.Invoke();    // ë‹«ê¸° ì½œë°± ì‹¤í–‰
         }
-        m_OnClose = null;    // ´İ±â Äİ¹é ÃÊ±âÈ­
+        m_OnClose = null;    // ë‹«ê¸° ì½œë°± ì´ˆê¸°í™”
 
-        UIManager.Instance.CloseUI(this);    // UI ¸Å´ÏÀú¸¦ ÅëÇØ UI ´İ±â
+        UIManager.Instance.CloseUI(this);    // UI ë§¤ë‹ˆì €ë¥¼ í†µí•´ UI ë‹«ê¸°
     }
 
-    // ´İ±â ¹öÆ° Å¬¸¯ ½Ã ½ÇÇàµÇ´Â ¸Ş¼­µå
+    // ë‹«ê¸° ë²„íŠ¼ í´ë¦­ ì‹œ ì‹¤í–‰ë˜ëŠ” ë©”ì„œë“œ
     public virtual void OnClickCloseButton()
     {
-        AudioManager.Instance.PlaySFX(SFX.ui_button_click);    // ¹öÆ° Å¬¸¯ È¿°úÀ½ Àç»ı
-        CloseUI();    // UI ´İ±â ½ÇÇà
+        AudioManager.Instance.PlaySFX(SFX.ui_button_click);    // ë²„íŠ¼ í´ë¦­ íš¨ê³¼ìŒ ì¬ìƒ
+        CloseUI();    // UI ë‹«ê¸° ì‹¤í–‰
     }
 
 

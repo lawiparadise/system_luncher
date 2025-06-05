@@ -1,66 +1,66 @@
 using UnityEngine;
 
-// »ç¿ëÀÚ ¼³Á¤ µ¥ÀÌÅÍ °ü¸® Å¬·¡½º
+// ì‚¬ìš©ì ì„¤ì • ë°ì´í„° ê´€ë¦¬ í´ë˜ìŠ¤
 public class UserSettingsData : IUserData
 {
-    // »ç¿îµå on/off ¼³Á¤
+    // ì‚¬ìš´ë“œ on/off ì„¤ì •
     public bool Sound { get; set; }
 
-    // ±âº»°ªÀ¸·Î ÃÊ±âÈ­
+    // ê¸°ë³¸ê°’ìœ¼ë¡œ ì´ˆê¸°í™”
     public void SetDefaultData()
     {
         Logger.Log($"{GetType()}::SetDefaultData");
 
-        Sound = true; // »ç¿îµå¸¦ ±âº»ÀûÀ¸·Î ÄÑÁüÀ¸·Î ¼³Á¤
+        Sound = true; // ì‚¬ìš´ë“œë¥¼ ê¸°ë³¸ì ìœ¼ë¡œ ì¼œì§ìœ¼ë¡œ ì„¤ì •
     }
 
-    // PlayerPrefs¿¡¼­ ¼³Á¤ µ¥ÀÌÅÍ ·Îµå
+    // PlayerPrefsì—ì„œ ì„¤ì • ë°ì´í„° ë¡œë“œ
     public bool LoadData()
     {
         Logger.Log($"{GetType()}::LoadData");
 
-        bool result = false; // ·Îµå °á°ú ÀúÀå¿ë º¯¼ö
+        bool result = false; // ë¡œë“œ ê²°ê³¼ ì €ì¥ìš© ë³€ìˆ˜
 
         try
         {
-            // PlayerPrefs¿¡¼­ »ç¿îµå ¼³Á¤À» int·Î ÀĞ¾î¿Í¼­ bool·Î º¯È¯
+            // PlayerPrefsì—ì„œ ì‚¬ìš´ë“œ ì„¤ì •ì„ intë¡œ ì½ì–´ì™€ì„œ boolë¡œ ë³€í™˜
             Sound = PlayerPrefs.GetInt("Sound") == 1 ? true : false;
-            result = true; // ·Îµå ¼º°ø
+            result = true; // ë¡œë“œ ì„±ê³µ
 
             Logger.Log($"Sound:{Sound}");
         }
         catch (System.Exception e)
         {
-            // ·Îµå ½ÇÆĞ Ã³¸®
+            // ë¡œë“œ ì‹¤íŒ¨ ì²˜ë¦¬
             Logger.Log("Load failed (" + e.Message + ")");
         }
 
-        return result; // ·Îµå °á°ú ¹İÈ¯
+        return result; // ë¡œë“œ ê²°ê³¼ ë°˜í™˜
     }
 
-    // PlayerPrefs¿¡ ¼³Á¤ µ¥ÀÌÅÍ ÀúÀå
+    // PlayerPrefsì— ì„¤ì • ë°ì´í„° ì €ì¥
     public bool SaveData()
     {
         Logger.Log($"{GetType()}::SaveData");
 
-        bool result = false; // ÀúÀå °á°ú ÀúÀå¿ë º¯¼ö
+        bool result = false; // ì €ì¥ ê²°ê³¼ ì €ì¥ìš© ë³€ìˆ˜
 
         try
         {
-            // bool °ªÀ» int·Î º¯È¯ÇÏ¿© PlayerPrefs¿¡ ÀúÀå
+            // bool ê°’ì„ intë¡œ ë³€í™˜í•˜ì—¬ PlayerPrefsì— ì €ì¥
             PlayerPrefs.SetInt("Sound", Sound ? 1 : 0);
-            PlayerPrefs.Save(); // º¯°æ»çÇ×À» µğ½ºÅ©¿¡ ÀúÀå
+            PlayerPrefs.Save(); // ë³€ê²½ì‚¬í•­ì„ ë””ìŠ¤í¬ì— ì €ì¥
 
-            result = true; // ÀúÀå ¼º°ø
+            result = true; // ì €ì¥ ì„±ê³µ
 
             Logger.Log($"Sound:{Sound}");
         }
         catch (System.Exception e)
         {
-            // ÀúÀå ½ÇÆĞ Ã³¸®
+            // ì €ì¥ ì‹¤íŒ¨ ì²˜ë¦¬
             Logger.Log("Save failed (" + e.Message + ")");
         }
 
-        return result; // ÀúÀå °á°ú ¹İÈ¯
+        return result; // ì €ì¥ ê²°ê³¼ ë°˜í™˜
     }
 }

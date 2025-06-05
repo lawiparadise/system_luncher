@@ -1,115 +1,115 @@
-// TextMeshPro UI ÄÄÆ÷³ÍÆ®¸¦ »ç¿ëÇÏ±â À§ÇÑ ³×ÀÓ½ºÆäÀÌ½º
+// TextMeshPro UI ì»´í¬ë„ŒíŠ¸ë¥¼ ì‚¬ìš©í•˜ê¸° ìœ„í•œ ë„¤ì„ìŠ¤í˜ì´ìŠ¤
 using TMPro;
-// Unity ¿£ÁøÀÇ ±âº» ±â´ÉÀ» »ç¿ëÇÏ±â À§ÇÑ ³×ÀÓ½ºÆäÀÌ½º
+// Unity ì—”ì§„ì˜ ê¸°ë³¸ ê¸°ëŠ¥ì„ ì‚¬ìš©í•˜ê¸° ìœ„í•œ ë„¤ì„ìŠ¤í˜ì´ìŠ¤
 using UnityEngine;
 
-// ¼³Á¤ UI¸¦ °ü¸®ÇÏ´Â Å¬·¡½º, BaseUI¸¦ »ó¼Ó¹ŞÀ½
+// ì„¤ì • UIë¥¼ ê´€ë¦¬í•˜ëŠ” í´ë˜ìŠ¤, BaseUIë¥¼ ìƒì†ë°›ìŒ
 public class SettingsUI : BaseUI
 {
-    // °ÔÀÓ ¹öÀüÀ» Ç¥½ÃÇÒ ÅØ½ºÆ® ÄÄÆ÷³ÍÆ®
+    // ê²Œì„ ë²„ì „ì„ í‘œì‹œí•  í…ìŠ¤íŠ¸ ì»´í¬ë„ŒíŠ¸
     public TextMeshProUGUI GameVersionTxt;
-    // »ç¿îµå ÄÑÁü »óÅÂ¸¦ ³ªÅ¸³»´Â Åä±Û ¿ÀºêÁ§Æ®
+    // ì‚¬ìš´ë“œ ì¼œì§ ìƒíƒœë¥¼ ë‚˜íƒ€ë‚´ëŠ” í† ê¸€ ì˜¤ë¸Œì íŠ¸
     public GameObject SoundOnToggle;
-    // »ç¿îµå ²¨Áü »óÅÂ¸¦ ³ªÅ¸³»´Â Åä±Û ¿ÀºêÁ§Æ®
+    // ì‚¬ìš´ë“œ êº¼ì§ ìƒíƒœë¥¼ ë‚˜íƒ€ë‚´ëŠ” í† ê¸€ ì˜¤ë¸Œì íŠ¸
     public GameObject SoundOffToggle;
 
-    // °³ÀÎÁ¤º¸Ã³¸®¹æÄ§ URL »ó¼ö
+    // ê°œì¸ì •ë³´ì²˜ë¦¬ë°©ì¹¨ URL ìƒìˆ˜
     private const string PRIVACY_POLICY_URL = "https://likelion.net/";
 
-    // UI Á¤º¸¸¦ ¼³Á¤ÇÏ´Â ¸Ş¼­µå ¿À¹ö¶óÀÌµå
+    // UI ì •ë³´ë¥¼ ì„¤ì •í•˜ëŠ” ë©”ì„œë“œ ì˜¤ë²„ë¼ì´ë“œ
     public override void SetInfo(BaseUIData uiData)
     {
-        // ºÎ¸ğ Å¬·¡½ºÀÇ SetInfo ¸Ş¼­µå È£Ãâ
+        // ë¶€ëª¨ í´ë˜ìŠ¤ì˜ SetInfo ë©”ì„œë“œ í˜¸ì¶œ
         base.SetInfo(uiData);
 
-        // °ÔÀÓ ¹öÀü ¼³Á¤
+        // ê²Œì„ ë²„ì „ ì„¤ì •
         SetGameVersion();
 
-        // »ç¿ëÀÚ ¼³Á¤ µ¥ÀÌÅÍ¸¦ °¡Á®¿È
+        // ì‚¬ìš©ì ì„¤ì • ë°ì´í„°ë¥¼ ê°€ì ¸ì˜´
         var userSettingsData = UserDataManager.Instance.GetUserData<UserSettingsData>();
-        // »ç¿ëÀÚ ¼³Á¤ µ¥ÀÌÅÍ°¡ Á¸ÀçÇÏ´ÂÁö È®ÀÎ
+        // ì‚¬ìš©ì ì„¤ì • ë°ì´í„°ê°€ ì¡´ì¬í•˜ëŠ”ì§€ í™•ì¸
         if (userSettingsData != null)
         {
-            // »ç¿îµå ¼³Á¤À» UI¿¡ ¹İ¿µ
+            // ì‚¬ìš´ë“œ ì„¤ì •ì„ UIì— ë°˜ì˜
             SetSoundSetting(userSettingsData.Sound);
         }
     }
 
-    // °ÔÀÓ ¹öÀüÀ» ¼³Á¤ÇÏ´Â ¸Ş¼­µå
+    // ê²Œì„ ë²„ì „ì„ ì„¤ì •í•˜ëŠ” ë©”ì„œë“œ
     private void SetGameVersion()
     {
-        // ¾ÖÇÃ¸®ÄÉÀÌ¼Ç ¹öÀüÀ» ÅØ½ºÆ®¿¡ ¼³Á¤
+        // ì• í”Œë¦¬ì¼€ì´ì…˜ ë²„ì „ì„ í…ìŠ¤íŠ¸ì— ì„¤ì •
         GameVersionTxt.text = $"Version:{Application.version}";
     }
 
-    // »ç¿îµå ¼³Á¤ »óÅÂ¸¦ UI¿¡ ¹İ¿µÇÏ´Â ¸Ş¼­µå
+    // ì‚¬ìš´ë“œ ì„¤ì • ìƒíƒœë¥¼ UIì— ë°˜ì˜í•˜ëŠ” ë©”ì„œë“œ
     private void SetSoundSetting(bool sound)
     {
-        // »ç¿îµå ÄÑÁü Åä±ÛÀÇ È°¼ºÈ­ »óÅÂ ¼³Á¤
+        // ì‚¬ìš´ë“œ ì¼œì§ í† ê¸€ì˜ í™œì„±í™” ìƒíƒœ ì„¤ì •
         SoundOnToggle.SetActive(sound);
-        // »ç¿îµå ²¨Áü Åä±ÛÀÇ È°¼ºÈ­ »óÅÂ ¼³Á¤ (¹İ´ë)
+        // ì‚¬ìš´ë“œ êº¼ì§ í† ê¸€ì˜ í™œì„±í™” ìƒíƒœ ì„¤ì • (ë°˜ëŒ€)
         SoundOffToggle.SetActive(!sound);
     }
 
-    // »ç¿îµå ÄÑÁü Åä±Û Å¬¸¯ ½Ã È£ÃâµÇ´Â ¸Ş¼­µå
+    // ì‚¬ìš´ë“œ ì¼œì§ í† ê¸€ í´ë¦­ ì‹œ í˜¸ì¶œë˜ëŠ” ë©”ì„œë“œ
     public void OnClickSoundOnToggle()
     {
-        // ·Î±× Ãâ·Â
+        // ë¡œê·¸ ì¶œë ¥
         Logger.Log($"{GetType()}::OnClickSoundOnToggle");
 
-        // ¹öÆ° Å¬¸¯ È¿°úÀ½ Àç»ı
+        // ë²„íŠ¼ í´ë¦­ íš¨ê³¼ìŒ ì¬ìƒ
         AudioManager.Instance.PlaySFX(SFX.ui_button_click);
 
-        // »ç¿ëÀÚ ¼³Á¤ µ¥ÀÌÅÍ¸¦ °¡Á®¿È
+        // ì‚¬ìš©ì ì„¤ì • ë°ì´í„°ë¥¼ ê°€ì ¸ì˜´
         var userSettingsData = UserDataManager.Instance.GetUserData<UserSettingsData>();
-        // »ç¿ëÀÚ ¼³Á¤ µ¥ÀÌÅÍ°¡ Á¸ÀçÇÏ´ÂÁö È®ÀÎ
+        // ì‚¬ìš©ì ì„¤ì • ë°ì´í„°ê°€ ì¡´ì¬í•˜ëŠ”ì§€ í™•ì¸
         if (userSettingsData != null)
         {
-            // »ç¿îµå¸¦ ²¨ÁüÀ¸·Î ¼³Á¤
+            // ì‚¬ìš´ë“œë¥¼ êº¼ì§ìœ¼ë¡œ ì„¤ì •
             userSettingsData.Sound = false;
-            // »ç¿ëÀÚ µ¥ÀÌÅÍ ÀúÀå
+            // ì‚¬ìš©ì ë°ì´í„° ì €ì¥
             UserDataManager.Instance.SaveUserData();
-            // ¿Àµğ¿À À½¼Ò°Å
+            // ì˜¤ë””ì˜¤ ìŒì†Œê±°
             AudioManager.Instance.Mute();
-            // UI¿¡ »ç¿îµå ¼³Á¤ ¹İ¿µ
+            // UIì— ì‚¬ìš´ë“œ ì„¤ì • ë°˜ì˜
             SetSoundSetting(userSettingsData.Sound);
         }
     }
 
-    // »ç¿îµå ²¨Áü Åä±Û Å¬¸¯ ½Ã È£ÃâµÇ´Â ¸Ş¼­µå
+    // ì‚¬ìš´ë“œ êº¼ì§ í† ê¸€ í´ë¦­ ì‹œ í˜¸ì¶œë˜ëŠ” ë©”ì„œë“œ
     public void OnClickSoundOffToggle()
     {
-        // ·Î±× Ãâ·Â
+        // ë¡œê·¸ ì¶œë ¥
         Logger.Log($"{GetType()}::OnClickSoundOffToggle");
 
-        // ¹öÆ° Å¬¸¯ È¿°úÀ½ Àç»ı
+        // ë²„íŠ¼ í´ë¦­ íš¨ê³¼ìŒ ì¬ìƒ
         AudioManager.Instance.PlaySFX(SFX.ui_button_click);
 
-        // »ç¿ëÀÚ ¼³Á¤ µ¥ÀÌÅÍ¸¦ °¡Á®¿È
+        // ì‚¬ìš©ì ì„¤ì • ë°ì´í„°ë¥¼ ê°€ì ¸ì˜´
         var userSettingsData = UserDataManager.Instance.GetUserData<UserSettingsData>();
-        // »ç¿ëÀÚ ¼³Á¤ µ¥ÀÌÅÍ°¡ Á¸ÀçÇÏ´ÂÁö È®ÀÎ
+        // ì‚¬ìš©ì ì„¤ì • ë°ì´í„°ê°€ ì¡´ì¬í•˜ëŠ”ì§€ í™•ì¸
         if (userSettingsData != null)
         {
-            // »ç¿îµå¸¦ ÄÑÁüÀ¸·Î ¼³Á¤
+            // ì‚¬ìš´ë“œë¥¼ ì¼œì§ìœ¼ë¡œ ì„¤ì •
             userSettingsData.Sound = true;
-            // »ç¿ëÀÚ µ¥ÀÌÅÍ ÀúÀå
+            // ì‚¬ìš©ì ë°ì´í„° ì €ì¥
             UserDataManager.Instance.SaveUserData();
-            // ¿Àµğ¿À À½¼Ò°Å ÇØÁ¦
+            // ì˜¤ë””ì˜¤ ìŒì†Œê±° í•´ì œ
             AudioManager.Instance.UnMute();
-            // UI¿¡ »ç¿îµå ¼³Á¤ ¹İ¿µ
+            // UIì— ì‚¬ìš´ë“œ ì„¤ì • ë°˜ì˜
             SetSoundSetting(userSettingsData.Sound);
         }
     }
 
-    // °³ÀÎÁ¤º¸Ã³¸®¹æÄ§ ¹öÆ° Å¬¸¯ ½Ã È£ÃâµÇ´Â ¸Ş¼­µå
+    // ê°œì¸ì •ë³´ì²˜ë¦¬ë°©ì¹¨ ë²„íŠ¼ í´ë¦­ ì‹œ í˜¸ì¶œë˜ëŠ” ë©”ì„œë“œ
     public void OnClickPrivacyPolicyBtn()
     {
-        // ·Î±× Ãâ·Â
+        // ë¡œê·¸ ì¶œë ¥
         Logger.Log($"{GetType()}::OnClickPrivacyPolicyBtn");
 
-        // ¹öÆ° Å¬¸¯ È¿°úÀ½ Àç»ı
+        // ë²„íŠ¼ í´ë¦­ íš¨ê³¼ìŒ ì¬ìƒ
         AudioManager.Instance.PlaySFX(SFX.ui_button_click);
-        // °³ÀÎÁ¤º¸Ã³¸®¹æÄ§ URLÀ» ºê¶ó¿ìÀú¿¡¼­ ¿­±â
+        // ê°œì¸ì •ë³´ì²˜ë¦¬ë°©ì¹¨ URLì„ ë¸Œë¼ìš°ì €ì—ì„œ ì—´ê¸°
         Application.OpenURL(PRIVACY_POLICY_URL);
     }
 }

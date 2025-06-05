@@ -1,125 +1,158 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIManager : SingletonBehaviour<UIManager> // ½Ì±ÛÅæ ÆĞÅÏÀ» »ó¼Ó¹Ş´Â UI °ü¸®ÀÚ Å¬·¡½º
+public class UIManager : SingletonBehaviour<UIManager> // ì‹±ê¸€í†¤ íŒ¨í„´ì„ ìƒì†ë°›ëŠ” UI ê´€ë¦¬ì í´ë˜ìŠ¤
 {
-    public Transform UICanvasTrs; // UI Äµ¹ö½º Transform
-    public Transform ClosedUITrs; // ´İÈù UI¸¦ º¸°üÇÒ Transform
+    public Transform UICanvasTrs; // UI ìº”ë²„ìŠ¤ Transform
+    public Transform ClosedUITrs; // ë‹«íŒ UIë¥¼ ë³´ê´€í•  Transform
 
-    private BaseUI m_FrontUI; // ÇöÀç °¡Àå ¾Õ¿¡ ÀÖ´Â UI
-    private Dictionary<System.Type, GameObject> m_OpenUIPool = new Dictionary<System.Type, GameObject>(); // ¿­¸° UIµéÀ» ÀúÀåÇÏ´Â µñ¼Å³Ê¸®
-    private Dictionary<System.Type, GameObject> m_ClosedUIPool = new Dictionary<System.Type, GameObject>(); // ´İÈù UIµéÀ» ÀúÀåÇÏ´Â µñ¼Å³Ê¸®
+    private BaseUI m_FrontUI; // í˜„ì¬ ê°€ì¥ ì•ì— ìˆëŠ” UI
+    private Dictionary<System.Type, GameObject> m_OpenUIPool = new Dictionary<System.Type, GameObject>(); // ì—´ë¦° UIë“¤ì„ ì €ì¥í•˜ëŠ” ë”•ì…”ë„ˆë¦¬
+    private Dictionary<System.Type, GameObject> m_ClosedUIPool = new Dictionary<System.Type, GameObject>(); // ë‹«íŒ UIë“¤ì„ ì €ì¥í•˜ëŠ” ë”•ì…”ë„ˆë¦¬
 
+    // ì¬í™” UI ì»´í¬ë„ŒíŠ¸
+    private GoodsUI m_StatsUI;
 
-    private BaseUI GetUI<T>(out bool isAlreadyOpen) // Á¦³×¸¯ Å¸ÀÔÀ¸·Î UI¸¦ °¡Á®¿À´Â ¸Ş¼­µå
+    // ì´ˆê¸°í™” ë©”ì„œë“œ
+    protected override void Init()
     {
-        System.Type uiType = typeof(T); // Á¦³×¸¯ Å¸ÀÔÀ» System.TypeÀ¸·Î º¯È¯
+        // ë¶€ëª¨ í´ë˜ìŠ¤ì˜ Init í˜¸ì¶œ
+        base.Init();
 
-        BaseUI ui = null; // UI ÄÄÆ÷³ÍÆ® º¯¼ö ÃÊ±âÈ­
-        isAlreadyOpen = false; // ÀÌ¹Ì ¿­·ÁÀÖ´ÂÁö ¿©ºÎ ÃÊ±âÈ­
-
-        if (m_OpenUIPool.ContainsKey(uiType)) // ¿­¸° UI Ç®¿¡ ÇØ´ç Å¸ÀÔÀÌ ÀÖ´ÂÁö È®ÀÎ
+        // ì”¬ì—ì„œ GoodsUI ì»´í¬ë„ŒíŠ¸ ì°¾ê¸°
+        m_StatsUI = FindFirstObjectByType<GoodsUI>();
+        // GoodsUIë¥¼ ì°¾ì§€ ëª»í–ˆì„ ë•Œ
+        if (!m_StatsUI)
         {
-            ui = m_OpenUIPool[uiType].GetComponent<BaseUI>(); // ¿­¸° UI Ç®¿¡¼­ UI ÄÄÆ÷³ÍÆ® °¡Á®¿À±â
-            isAlreadyOpen = true; // ÀÌ¹Ì ¿­·ÁÀÖÀ½À¸·Î ¼³Á¤
-        }
-        else if (m_ClosedUIPool.ContainsKey(uiType)) // ´İÈù UI Ç®¿¡ ÇØ´ç Å¸ÀÔÀÌ ÀÖ´ÂÁö È®ÀÎ
-        {
-            ui = m_ClosedUIPool[uiType].GetComponent<BaseUI>(); // ´İÈù UI Ç®¿¡¼­ UI ÄÄÆ÷³ÍÆ® °¡Á®¿À±â
-            m_ClosedUIPool.Remove(uiType); // ´İÈù UI Ç®¿¡¼­ ÇØ´ç Å¸ÀÔ Á¦°Å
-        }
-        else // ¾î´À Ç®¿¡µµ ¾ø´Â °æ¿ì
-        {
-            var uiObj = Instantiate(Resources.Load($"UI/{uiType}", typeof(GameObject))) as GameObject; // ¸®¼Ò½º¿¡¼­ UI ÇÁ¸®ÆÕ ·Îµå ¹× ÀÎ½ºÅÏ½ºÈ­
-            ui = uiObj.GetComponent<BaseUI>(); // »ı¼ºµÈ ¿ÀºêÁ§Æ®¿¡¼­ BaseUI ÄÄÆ÷³ÍÆ® °¡Á®¿À±â
-        }
-
-        return ui; // UI ÄÄÆ÷³ÍÆ® ¹İÈ¯
-    }
-
-
-    public void OpenUI<T>(BaseUIData uiData) // Á¦³×¸¯ Å¸ÀÔÀ¸·Î UI¸¦ ¿©´Â ¸Ş¼­µå
-    {
-        System.Type uiType = typeof(T); // Á¦³×¸¯ Å¸ÀÔÀ» System.TypeÀ¸·Î º¯È¯
-
-        Logger.Log($"{GetType()}::OpenUI({uiType})"); // UI ¿­±â ·Î±× Ãâ·Â
-
-        bool isAlreadyOpen = false; // ÀÌ¹Ì ¿­·ÁÀÖ´ÂÁö ¿©ºÎ º¯¼ö
-        var ui = GetUI<T>(out isAlreadyOpen); // UI °¡Á®¿À±â
-
-        if (!ui) // UI°¡ ¾ø´Â °æ¿ì
-        {
-            Logger.LogError($"{uiType} does not exist."); // ¿¡·¯ ·Î±× Ãâ·Â
-            return; // ¸Ş¼­µå Á¾·á
-        }
-
-        if (isAlreadyOpen) // ÀÌ¹Ì ¿­·ÁÀÖ´Â °æ¿ì
-        {
-            Logger.LogError($"{uiType} is already open."); // ¿¡·¯ ·Î±× Ãâ·Â
-            return; // ¸Ş¼­µå Á¾·á
-        }
-
-        var siblingIdx = UICanvasTrs.childCount; // UI Äµ¹ö½ºÀÇ ÀÚ½Ä °³¼ö¸¦ ÇüÁ¦ ÀÎµ¦½º·Î ¼³Á¤
-        ui.Init(UICanvasTrs); // UI ÃÊ±âÈ­
-        ui.transform.SetSiblingIndex(siblingIdx); // UIÀÇ ÇüÁ¦ ÀÎµ¦½º ¼³Á¤
-        ui.gameObject.SetActive(true); // UI °ÔÀÓ¿ÀºêÁ§Æ® È°¼ºÈ­
-        ui.SetInfo(uiData); // UI Á¤º¸ ¼³Á¤
-        ui.ShowUI(); // UI Ç¥½Ã
-
-        m_FrontUI = ui; // ÇöÀç UI¸¦ °¡Àå ¾ÕÀÇ UI·Î ¼³Á¤
-        m_OpenUIPool[uiType] = ui.gameObject; // ¿­¸° UI Ç®¿¡ UI Ãß°¡
-    }
-
-    public void CloseUI(BaseUI ui) // UI¸¦ ´İ´Â ¸Ş¼­µå
-    {
-        System.Type uiType = ui.GetType(); // UIÀÇ Å¸ÀÔ °¡Á®¿À±â
-
-        Logger.Log($"CloseUI UI:{uiType}"); // UI ´İ±â ·Î±× Ãâ·Â
-
-        ui.gameObject.SetActive(false); // UI °ÔÀÓ¿ÀºêÁ§Æ® ºñÈ°¼ºÈ­
-        m_OpenUIPool.Remove(uiType); // ¿­¸° UI Ç®¿¡¼­ ÇØ´ç Å¸ÀÔ Á¦°Å
-        m_ClosedUIPool[uiType] = ui.gameObject; // ´İÈù UI Ç®¿¡ UI Ãß°¡
-        ui.transform.SetParent(ClosedUITrs); // UIÀÇ ºÎ¸ğ¸¦ ´İÈù UI TransformÀ¸·Î ¼³Á¤
-
-        m_FrontUI = null; // °¡Àå ¾ÕÀÇ UI ÃÊ±âÈ­
-        var lastChild = UICanvasTrs.GetChild(UICanvasTrs.childCount - 1); // UI Äµ¹ö½ºÀÇ ¸¶Áö¸· ÀÚ½Ä °¡Á®¿À±â
-        if (lastChild) // ¸¶Áö¸· ÀÚ½ÄÀÌ ÀÖ´Â °æ¿ì
-        {
-            m_FrontUI = lastChild.gameObject.GetComponent<BaseUI>(); // ¸¶Áö¸· ÀÚ½ÄÀ» °¡Àå ¾ÕÀÇ UI·Î ¼³Á¤
-        }
-    }
-
-    public BaseUI GetActiveUI<T>() // Á¦³×¸¯ Å¸ÀÔÀ¸·Î È°¼º UI¸¦ °¡Á®¿À´Â ¸Ş¼­µå
-    {
-        var uiType = typeof(T); // Á¦³×¸¯ Å¸ÀÔÀ» System.TypeÀ¸·Î º¯È¯
-        return m_OpenUIPool.ContainsKey(uiType) ? m_OpenUIPool[uiType].GetComponent<BaseUI>() : null; 
-        // ¿­¸° UI Ç®¿¡ ÀÖÀ¸¸é UI ÄÄÆ÷³ÍÆ® ¹İÈ¯, ¾øÀ¸¸é null ¹İÈ¯
-    }
-
-    public bool ExistsOpenUI() // ¿­¸° UI°¡ Á¸ÀçÇÏ´ÂÁö È®ÀÎÇÏ´Â ¸Ş¼­µå
-    {
-        return m_FrontUI != null; // °¡Àå ¾ÕÀÇ UI°¡ nullÀÌ ¾Æ´Ï¸é true ¹İÈ¯
-    }
-
-    public BaseUI GetCurrentFrontUI() // ÇöÀç °¡Àå ¾ÕÀÇ UI¸¦ °¡Á®¿À´Â ¸Ş¼­µå
-    {
-        return m_FrontUI; // °¡Àå ¾ÕÀÇ UI ¹İÈ¯
-    }
-
-    public void CloseCurrFrontUI() // ÇöÀç °¡Àå ¾ÕÀÇ UI¸¦ ´İ´Â ¸Ş¼­µå
-    {
-        m_FrontUI.CloseUI(); // °¡Àå ¾ÕÀÇ UI ´İ±â
-    }
-
-    public void CloseAllOpenUI() // ¸ğµç ¿­¸° UI¸¦ ´İ´Â ¸Ş¼­µå
-    {
-        while (m_FrontUI) // °¡Àå ¾ÕÀÇ UI°¡ ÀÖ´Â µ¿¾È ¹İº¹
-        {
-            m_FrontUI.CloseUI(true); // °¡Àå ¾ÕÀÇ UI ´İ±â (ÀüÃ¼ ´İ±â ¸ğµå)
+            // ë¡œê·¸ ì¶œë ¥
+            Logger.Log("No stats ui component found.");
         }
     }
 
 
+
+    private BaseUI GetUI<T>(out bool isAlreadyOpen) // ì œë„¤ë¦­ íƒ€ì…ìœ¼ë¡œ UIë¥¼ ê°€ì ¸ì˜¤ëŠ” ë©”ì„œë“œ
+    {
+        System.Type uiType = typeof(T); // ì œë„¤ë¦­ íƒ€ì…ì„ System.Typeìœ¼ë¡œ ë³€í™˜
+
+        BaseUI ui = null; // UI ì»´í¬ë„ŒíŠ¸ ë³€ìˆ˜ ì´ˆê¸°í™”
+        isAlreadyOpen = false; // ì´ë¯¸ ì—´ë ¤ìˆëŠ”ì§€ ì—¬ë¶€ ì´ˆê¸°í™”
+
+        if (m_OpenUIPool.ContainsKey(uiType)) // ì—´ë¦° UI í’€ì— í•´ë‹¹ íƒ€ì…ì´ ìˆëŠ”ì§€ í™•ì¸
+        {
+            ui = m_OpenUIPool[uiType].GetComponent<BaseUI>(); // ì—´ë¦° UI í’€ì—ì„œ UI ì»´í¬ë„ŒíŠ¸ ê°€ì ¸ì˜¤ê¸°
+            isAlreadyOpen = true; // ì´ë¯¸ ì—´ë ¤ìˆìŒìœ¼ë¡œ ì„¤ì •
+        }
+        else if (m_ClosedUIPool.ContainsKey(uiType)) // ë‹«íŒ UI í’€ì— í•´ë‹¹ íƒ€ì…ì´ ìˆëŠ”ì§€ í™•ì¸
+        {
+            ui = m_ClosedUIPool[uiType].GetComponent<BaseUI>(); // ë‹«íŒ UI í’€ì—ì„œ UI ì»´í¬ë„ŒíŠ¸ ê°€ì ¸ì˜¤ê¸°
+            m_ClosedUIPool.Remove(uiType); // ë‹«íŒ UI í’€ì—ì„œ í•´ë‹¹ íƒ€ì… ì œê±°
+        }
+        else // ì–´ëŠ í’€ì—ë„ ì—†ëŠ” ê²½ìš°
+        {
+            var uiObj = Instantiate(Resources.Load($"UI/{uiType}", typeof(GameObject))) as GameObject; // ë¦¬ì†ŒìŠ¤ì—ì„œ UI í”„ë¦¬íŒ¹ ë¡œë“œ ë° ì¸ìŠ¤í„´ìŠ¤í™”
+            ui = uiObj.GetComponent<BaseUI>(); // ìƒì„±ëœ ì˜¤ë¸Œì íŠ¸ì—ì„œ BaseUI ì»´í¬ë„ŒíŠ¸ ê°€ì ¸ì˜¤ê¸°
+        }
+
+        return ui; // UI ì»´í¬ë„ŒíŠ¸ ë°˜í™˜
+    }
+
+
+    public void OpenUI<T>(BaseUIData uiData) // ì œë„¤ë¦­ íƒ€ì…ìœ¼ë¡œ UIë¥¼ ì—¬ëŠ” ë©”ì„œë“œ
+    {
+        System.Type uiType = typeof(T); // ì œë„¤ë¦­ íƒ€ì…ì„ System.Typeìœ¼ë¡œ ë³€í™˜
+
+        Logger.Log($"{GetType()}::OpenUI({uiType})"); // UI ì—´ê¸° ë¡œê·¸ ì¶œë ¥
+
+        bool isAlreadyOpen = false; // ì´ë¯¸ ì—´ë ¤ìˆëŠ”ì§€ ì—¬ë¶€ ë³€ìˆ˜
+        var ui = GetUI<T>(out isAlreadyOpen); // UI ê°€ì ¸ì˜¤ê¸°
+
+        if (!ui) // UIê°€ ì—†ëŠ” ê²½ìš°
+        {
+            Logger.LogError($"{uiType} does not exist."); // ì—ëŸ¬ ë¡œê·¸ ì¶œë ¥
+            return; // ë©”ì„œë“œ ì¢…ë£Œ
+        }
+
+        if (isAlreadyOpen) // ì´ë¯¸ ì—´ë ¤ìˆëŠ” ê²½ìš°
+        {
+            Logger.LogError($"{uiType} is already open."); // ì—ëŸ¬ ë¡œê·¸ ì¶œë ¥
+            return; // ë©”ì„œë“œ ì¢…ë£Œ
+        }
+
+        // ìº”ë²„ìŠ¤ì˜ ìì‹ ê°œìˆ˜ì—ì„œ 1ì„ ëº€ ì¸ë±ìŠ¤ ê³„ì‚°
+        var siblingIdx = UICanvasTrs.childCount - 1;
+        ui.Init(UICanvasTrs); // UI ì´ˆê¸°í™”
+        ui.transform.SetSiblingIndex(siblingIdx); // UIì˜ í˜•ì œ ì¸ë±ìŠ¤ ì„¤ì •
+        ui.gameObject.SetActive(true); // UI ê²Œì„ì˜¤ë¸Œì íŠ¸ í™œì„±í™”
+        ui.SetInfo(uiData); // UI ì •ë³´ ì„¤ì •
+        ui.ShowUI(); // UI í‘œì‹œ
+
+        m_FrontUI = ui; // í˜„ì¬ UIë¥¼ ê°€ì¥ ì•ì˜ UIë¡œ ì„¤ì •
+        m_OpenUIPool[uiType] = ui.gameObject; // ì—´ë¦° UI í’€ì— UI ì¶”ê°€
+    }
+
+    public void CloseUI(BaseUI ui) // UIë¥¼ ë‹«ëŠ” ë©”ì„œë“œ
+    {
+        System.Type uiType = ui.GetType(); // UIì˜ íƒ€ì… ê°€ì ¸ì˜¤ê¸°
+
+        Logger.Log($"CloseUI UI:{uiType}"); // UI ë‹«ê¸° ë¡œê·¸ ì¶œë ¥
+
+        ui.gameObject.SetActive(false); // UI ê²Œì„ì˜¤ë¸Œì íŠ¸ ë¹„í™œì„±í™”
+        m_OpenUIPool.Remove(uiType); // ì—´ë¦° UI í’€ì—ì„œ í•´ë‹¹ íƒ€ì… ì œê±°
+        m_ClosedUIPool[uiType] = ui.gameObject; // ë‹«íŒ UI í’€ì— UI ì¶”ê°€
+        ui.transform.SetParent(ClosedUITrs); // UIì˜ ë¶€ëª¨ë¥¼ ë‹«íŒ UI Transformìœ¼ë¡œ ì„¤ì •
+
+        m_FrontUI = null; // ê°€ì¥ ì•ì˜ UI ì´ˆê¸°í™”
+        var lastChild = UICanvasTrs.GetChild(UICanvasTrs.childCount - 1); // UI ìº”ë²„ìŠ¤ì˜ ë§ˆì§€ë§‰ ìì‹ ê°€ì ¸ì˜¤ê¸°
+        if (lastChild) // ë§ˆì§€ë§‰ ìì‹ì´ ìˆëŠ” ê²½ìš°
+        {
+            m_FrontUI = lastChild.gameObject.GetComponent<BaseUI>(); // ë§ˆì§€ë§‰ ìì‹ì„ ê°€ì¥ ì•ì˜ UIë¡œ ì„¤ì •
+        }
+    }
+
+    public BaseUI GetActiveUI<T>() // ì œë„¤ë¦­ íƒ€ì…ìœ¼ë¡œ í™œì„± UIë¥¼ ê°€ì ¸ì˜¤ëŠ” ë©”ì„œë“œ
+    {
+        var uiType = typeof(T); // ì œë„¤ë¦­ íƒ€ì…ì„ System.Typeìœ¼ë¡œ ë³€í™˜
+        return m_OpenUIPool.ContainsKey(uiType) ? m_OpenUIPool[uiType].GetComponent<BaseUI>() : null;
+        // ì—´ë¦° UI í’€ì— ìˆìœ¼ë©´ UI ì»´í¬ë„ŒíŠ¸ ë°˜í™˜, ì—†ìœ¼ë©´ null ë°˜í™˜
+    }
+
+    public bool ExistsOpenUI() // ì—´ë¦° UIê°€ ì¡´ì¬í•˜ëŠ”ì§€ í™•ì¸í•˜ëŠ” ë©”ì„œë“œ
+    {
+        return m_FrontUI != null; // ê°€ì¥ ì•ì˜ UIê°€ nullì´ ì•„ë‹ˆë©´ true ë°˜í™˜
+    }
+
+    public BaseUI GetCurrentFrontUI() // í˜„ì¬ ê°€ì¥ ì•ì˜ UIë¥¼ ê°€ì ¸ì˜¤ëŠ” ë©”ì„œë“œ
+    {
+        return m_FrontUI; // ê°€ì¥ ì•ì˜ UI ë°˜í™˜
+    }
+
+    public void CloseCurrFrontUI() // í˜„ì¬ ê°€ì¥ ì•ì˜ UIë¥¼ ë‹«ëŠ” ë©”ì„œë“œ
+    {
+        m_FrontUI.CloseUI(); // ê°€ì¥ ì•ì˜ UI ë‹«ê¸°
+    }
+
+    public void CloseAllOpenUI() // ëª¨ë“  ì—´ë¦° UIë¥¼ ë‹«ëŠ” ë©”ì„œë“œ
+    {
+        while (m_FrontUI) // ê°€ì¥ ì•ì˜ UIê°€ ìˆëŠ” ë™ì•ˆ ë°˜ë³µ
+        {
+            m_FrontUI.CloseUI(true); // ê°€ì¥ ì•ì˜ UI ë‹«ê¸° (ì „ì²´ ë‹«ê¸° ëª¨ë“œ)
+        }
+    }
+
+    // ì¬í™” UI í™œì„±í™”/ë¹„í™œì„±í™”
+    public void EnableStatsUI(bool value)
+    {
+        // ì¬í™” UI ê²Œì„ì˜¤ë¸Œì íŠ¸ í™œì„±í™” ìƒíƒœ ì„¤ì •
+        m_StatsUI.gameObject.SetActive(value);
+
+        // í™œì„±í™”í•˜ëŠ” ê²½ìš°
+        if (value)
+        {
+            // ì¬í™” ê°’ë“¤ ì„¤ì •
+            m_StatsUI.SetValues();
+        }
+    }
 
 
 }

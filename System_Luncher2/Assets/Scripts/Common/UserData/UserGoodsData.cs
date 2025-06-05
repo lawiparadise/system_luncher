@@ -1,14 +1,14 @@
 using UnityEngine;
 
-// »ç¿ëÀÚ ÀçÈ­ µ¥ÀÌÅÍ °ü¸® Å¬·¡½º
+// ì‚¬ìš©ì ì¬í™” ë°ì´í„° ê´€ë¦¬ í´ë˜ìŠ¤
 public class UserGoodsData : IUserData
 {
-    // º¸¼® ¼ö·®
+    // ë³´ì„ ìˆ˜ëŸ‰
     public long Gem { get; set; }
-    // °ñµå ¼ö·®
+    // ê³¨ë“œ ìˆ˜ëŸ‰
     public long Gold { get; set; }
 
-    // ±âº»°ªÀ¸·Î ÃÊ±âÈ­
+    // ê¸°ë³¸ê°’ìœ¼ë¡œ ì´ˆê¸°í™”
     public void SetDefaultData()
     {
         Logger.Log($"{GetType()}::SetDefaultData");
@@ -17,7 +17,7 @@ public class UserGoodsData : IUserData
         Gold = 0;
     }
 
-    // PlayerPrefs¿¡¼­ µ¥ÀÌÅÍ ·Îµå
+    // PlayerPrefsì—ì„œ ë°ì´í„° ë¡œë“œ
     public bool LoadData()
     {
         Logger.Log($"{GetType()}::LoadData");
@@ -26,7 +26,7 @@ public class UserGoodsData : IUserData
 
         try
         {
-            // ÀúÀåµÈ ÀçÈ­ µ¥ÀÌÅÍ ÀĞ±â
+            // ì €ì¥ëœ ì¬í™” ë°ì´í„° ì½ê¸°
             Gem = long.Parse(PlayerPrefs.GetString("Gem"));
             Gold = long.Parse(PlayerPrefs.GetString("Gold"));
             result = true;
@@ -35,14 +35,14 @@ public class UserGoodsData : IUserData
         }
         catch (System.Exception e)
         {
-            // ·Îµå ½ÇÆĞ Ã³¸®
+            // ë¡œë“œ ì‹¤íŒ¨ ì²˜ë¦¬
             Logger.Log("Load failed (" + e.Message + ")");
         }
 
         return result;
     }
 
-    // PlayerPrefs¿¡ µ¥ÀÌÅÍ ÀúÀå
+    // PlayerPrefsì— ë°ì´í„° ì €ì¥
     public bool SaveData()
     {
         Logger.Log($"{GetType()}::SaveData");
@@ -51,7 +51,7 @@ public class UserGoodsData : IUserData
 
         try
         {
-            // ÀçÈ­ µ¥ÀÌÅÍ ÀúÀå
+            // ì¬í™” ë°ì´í„° ì €ì¥
             PlayerPrefs.SetString("Gem", Gem.ToString());
             PlayerPrefs.SetString("Gold", Gold.ToString());
             PlayerPrefs.Save();
@@ -62,7 +62,7 @@ public class UserGoodsData : IUserData
         }
         catch (System.Exception e)
         {
-            // ÀúÀå ½ÇÆĞ Ã³¸®
+            // ì €ì¥ ì‹¤íŒ¨ ì²˜ë¦¬
             Logger.Log("Save failed (" + e.Message + ")");
         }
 

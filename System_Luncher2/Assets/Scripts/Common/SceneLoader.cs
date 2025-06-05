@@ -1,18 +1,18 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-// ¾À Á¾·ù¸¦ Á¤ÀÇÇÏ´Â ¿­°ÅÇü
+// ì”¬ ì¢…ë¥˜ë¥¼ ì •ì˜í•˜ëŠ” ì—´ê±°í˜•
 public enum SceneType
 {
-    Title,  // Å¸ÀÌÆ² È­¸é
-    Lobby,  // ·Îºñ È­¸é
-    InGame, // °ÔÀÓ È­¸é
+    Title,  // íƒ€ì´í‹€ í™”ë©´
+    Lobby,  // ë¡œë¹„ í™”ë©´
+    InGame, // ê²Œì„ í™”ë©´
 }
 
-// ¾À ÀüÈ¯À» °ü¸®ÇÏ´Â ½Ì±ÛÅæ Å¬·¡½º
+// ì”¬ ì „í™˜ì„ ê´€ë¦¬í•˜ëŠ” ì‹±ê¸€í†¤ í´ë˜ìŠ¤
 public class SceneLoader : SingletonBehaviour<SceneLoader>
 {
-    // ÁöÁ¤µÈ ¾ÀÀ¸·Î ÀüÈ¯ÇÏ´Â ¸Ş¼­µå
+    // ì§€ì •ëœ ì”¬ìœ¼ë¡œ ì „í™˜í•˜ëŠ” ë©”ì„œë“œ
     public void LoadScene(SceneType sceneType)
     {
         Logger.Log($"{sceneType} scene loading...");
@@ -21,7 +21,7 @@ public class SceneLoader : SingletonBehaviour<SceneLoader>
         SceneManager.LoadScene(sceneType.ToString());
     }
 
-    // ÇöÀç ¾ÀÀ» ´Ù½Ã ·ÎµåÇÏ´Â ¸Ş¼­µå
+    // í˜„ì¬ ì”¬ì„ ë‹¤ì‹œ ë¡œë“œí•˜ëŠ” ë©”ì„œë“œ
     public void ReloadScene()
     {
         Logger.Log($"{SceneManager.GetActiveScene().name} scene loading...");
