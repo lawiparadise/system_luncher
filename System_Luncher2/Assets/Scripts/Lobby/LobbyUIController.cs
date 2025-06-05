@@ -6,7 +6,7 @@ public class LobbyUIController : MonoBehaviour
     // 초기화 메서드
     public void Init()
     {
-        // UIManager.Instance.EnableStatsUI(true);
+        UIManager.Instance.EnableStatsUI(true);
 
     }
 
@@ -77,6 +77,6 @@ public class LobbyUIController : MonoBehaviour
         Logger.Log($"{GetType()}::OnClickProfileBtn");
 
         var uiData = new BaseUIData();
-        // UIManager.Instance.OpenUI<InventoryUI>(uiData);
+        UIManager.Instance.OpenUI<InventoryUI>(uiData);
     }
 }
