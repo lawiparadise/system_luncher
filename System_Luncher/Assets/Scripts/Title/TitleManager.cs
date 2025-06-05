@@ -48,18 +48,9 @@ public class TitleManager : MonoBehaviour
         //confirmUIData.CancelBtnTxt = "취소";
         //UIManager.Instance.OpenUI<ConfirmUI>(confirmUIData);
 
-        // AudioManager.Instance.OnLoadUserData();
+        AudioManager.Instance.OnLoadUserData();
 
         // UIManager.Instance.EnableStatsUI(false);
-
-        // var confirmUIData = new ConfirmUIData();
-        // confirmUIData.ConfirmType = ConfirmType.OK;
-        // confirmUIData.TitleTxt = "UI Test";
-        // confirmUIData.DescTxt = "This is UI Text";
-        // confirmUIData.OKBtnTxt = "OK1";
-        // UIManager.Instance.OpenUI<ConfirmUI>(confirmUIData);
-
-
 
         StartCoroutine(LoadGameCo());
     }
